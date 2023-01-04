@@ -11,7 +11,6 @@ const Home = ({ session, setSession }) => {
   if (session) {
     return (
       <div>
-        <Navbar />
         <h1>Hello {session.user.email}</h1>
         <button
           onClick={signOut}
@@ -25,7 +24,6 @@ const Home = ({ session, setSession }) => {
 
   return (
     <div>
-      <Navbar />
       <h1>Home</h1>
     </div>
   );

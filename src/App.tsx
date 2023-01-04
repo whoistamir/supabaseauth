@@ -1,18 +1,14 @@
 import { useState, useEffect } from 'react';
 import { supabase } from './components/auth/supabaseClient';
 
+import Navbar from './components/Navbar';
 import Home from './components/Home';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import './App.css';
 import './index.css';
 
-import {
-  createBrowserRouter,
-  createRoutesFromElements,
-  Route,
-  RouterProvider,
-} from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { Session } from '@supabase/supabase-js';
 
 export default function App() {
@@ -42,22 +38,17 @@ export default function App() {
     checkSession();
   }, []);
 
-  const router = createBrowserRouter(
-    createRoutesFromElements(
-      <>
+  return (
+    <div>
+      <Navbar />
+      <Routes>
         <Route
           path="/"
           element={<Home session={session} setSession={setSession} />}
         />
         <Route path="/login" element={<Login session={session} />} />
         <Route path="/signup" element={<Signup session={session} />} />
-      </>
-    )
-  );
-
-  return (
-    <div>
-      <RouterProvider router={router} />
+      </Routes>
     </div>
   );
 }

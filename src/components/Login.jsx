@@ -12,7 +12,6 @@ const Login = ({ session }) => {
 
   return (
     <div>
-      <Navbar />
       <h1>Login Page</h1>
       <button
         className="px-2 py-1 rounded-md bg-gray-700 text-white"
