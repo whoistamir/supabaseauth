@@ -1,24 +1,35 @@
 import { useState, useEffect } from 'react';
 import { supabase } from './components/auth/supabaseClient';
 
+import Home from './components/Home';
+import Login from './components/Login';
+import Signup from './components/Signup';
 import './App.css';
 import './index.css';
 
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+} from 'react-router-dom';
+import { Session } from '@supabase/supabase-js';
+
 export default function App() {
-  const [user, setUser] = useState(false);
+  const [session, setSession] = useState<Session | null>(null);
 
   const checkSession = async () => {
     const { data } = await supabase.auth.getSession();
-    setUser(data.session?.user);
+    setSession(data.session);
 
     supabase.auth.onAuthStateChange((event, session) => {
       switch (event) {
         case 'SIGNED_IN':
-          setUser(session?.user);
+          setSession(session);
           break;
 
         case 'SIGNED_OUT':
-          setUser(null);
+          setSession(null);
           break;
 
         default:
@@ -27,34 +38,26 @@ export default function App() {
     });
   };
 
-  const signInWithGithub = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'github',
-    });
-  };
-
-  const signOut = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-  };
-
   useEffect(() => {
     checkSession();
   }, []);
 
-  if (user) {
-    return (
-      <div>
-        <h1>Hello {user.email}</h1>
-        <button onClick={signOut}>Sign out</button>
-      </div>
-    );
-  }
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <>
+        <Route
+          path="/"
+          element={<Home session={session} setSession={setSession} />}
+        />
+        <Route path="/login" element={<Login session={session} />} />
+        <Route path="/signup" element={<Signup session={session} />} />
+      </>
+    )
+  );
 
   return (
     <div>
-      <h1>Sign in!</h1>
-      <button onClick={signInWithGithub}>Log in with GitHub</button>
+      <RouterProvider router={router} />
     </div>
   );
 }
